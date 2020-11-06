@@ -2,5 +2,6 @@
 "DW":"Data Warehouse",
 "Mongodb" : "MongoDB",
 "SCRUM" : "Scrum",
-"Plsql":"PLSQL"
+"Plsql":"PLSQL",
+"Mysql":"MySQL"
 }

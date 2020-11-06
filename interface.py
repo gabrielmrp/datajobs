@@ -49,7 +49,19 @@ def main():
     
     st.dataframe(items.set_index(['Item']),width=1024, height=768)
     
-     
+    st.header('Stacks por Categoria') 
+    
+    categories = db_df.category.unique().tolist()
+    
+    for cat in categories:
+        
+        if(cat!='Outros'):
+            st.write(cat)
+            
+            item_categoria = db_df[db_df.category==cat].groupby(['item','category']).sum().sort_values(['count'],ascending=False).head(5).reset_index()[['item','count']].set_index(['item'])
+            item_categoria.rename(columns={'item':'Item','count':'Conta'},inplace=True)
+            st.dataframe(item_categoria)
+        
     
     df_src.rename(columns={'company':'Empresa','text':'Descrição','url':'url','charge':'Cargo'},inplace=True)
     st.markdown(get_table_download_link(df_src), unsafe_allow_html=True)
