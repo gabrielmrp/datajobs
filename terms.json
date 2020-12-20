@@ -3,5 +3,6 @@
 "Mongodb" : "MongoDB",
 "SCRUM" : "Scrum",
 "Plsql":"PLSQL",
-"Mysql":"MySQL"
+"Mysql":"MySQL",
+"SQL Server":"SQL"
 }

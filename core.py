@@ -31,14 +31,17 @@ def operation():
     import pandas as pd 
     #capture used terms in files
     df_src = pd.DataFrame()
+    src = pd.read_excel('source.xlsx',engine='openpyxl')
     
     for charge in ["BI","CD","ED"]:
         filename = charge+".json"
         print(charge)
         dx = pd.DataFrame()
         
-        with open(filename, encoding='utf-8') as json_file:
-            data = json.load(json_file)
+        #with open(filename, encoding='utf-8') as json_file:
+          #   data = json.load(json_file)
+        
+        data = json.loads(src[src.charge==charge].to_json(orient="records",force_ascii=False))
         
         with open("stacklist.json", encoding='utf-8') as stacklist:
             stack = json.load(stacklist)
