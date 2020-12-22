@@ -7,7 +7,6 @@ import core as core
 import seaborn as sns
 import matplotlib.pyplot as plt
 import base64
-import streamlit.components.v1 as components
 from pylab import rcParams
 
 def get_table_download_link(df,filename,description):
