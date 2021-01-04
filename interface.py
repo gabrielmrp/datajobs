@@ -74,7 +74,7 @@ def main():
                     </ul>
                     """, unsafe_allow_html=True)
 
-        st.write('Tabulação: Inserção em planilha "Excel" contendo como colunas: "company" (empresa) ,"text" (descritivo) e "url" (endereço) e "charge (cargo)')
+        st.write('Tabulação: Inserção em planilha "Excel" contendo como colunas: "company" (empresa) ,"text" (descritivo) e "url" (endereço) e "charge" (cargo)')
 
         st.markdown(get_table_download_link(df_src,'source.xlsx','Baixar Fonte de Dados','csv'), unsafe_allow_html=True)        
         st.write('As stacks foram coletadas a partir de sites de recrutamento, como Programathor, Revelo e Geekhunter')
