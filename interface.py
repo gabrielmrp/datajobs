@@ -1,4 +1,5 @@
 
+import xlsxwriter
 
 import streamlit as st
 import numpy as np
@@ -8,15 +9,31 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import base64
 from pylab import rcParams
+from io import BytesIO
 
-def get_table_download_link(df,filename,description):
+def get_table_download_link(df,filename,description,ftype):
     """Generates a link allowing the data in a given panda dataframe to be downloaded
     in:  dataframe
     out: href string
     """
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-    href = f'<a href="data:file/csv;base64,{b64}" download="'+filename+'">'+description+'</a>'
+    def to_excel(df):
+            output = BytesIO()
+            writer = pd.ExcelWriter(output, engine='xlsxwriter')
+            df.to_excel(writer,index=False)
+            writer.save()
+            processed_data = output.getvalue()
+            return processed_data
+
+
+    if(ftype=='csv'):
+        df = df[["company","text","url","charge"]]
+
+        xlsx = to_excel(df)
+        b64 = base64.b64encode(xlsx).decode()  # some strings <-> bytes conversions necessary here
+        href= f'<a href="data::application/octet-stream;base64,{b64}" download="'+filename+'">'+description+'</a>'
+    else:
+        b64 = base64.b64encode(open(filename,"r",encoding="utf-8").read().encode()).decode()  
+        href = f'<a href="data:file/txt;base64,{b64}" download="'+filename+'">'+description+'</a>'
     return href
 
 
@@ -44,27 +61,41 @@ def main():
 
 
     if(selection=='Metodologia'):
-     
+        st.header('Metodologia')
+
     #if st.sidebar.button('Metodologia'):         
-        st.write('Procedimento: Coleta manual de informações de vagas em sites de vagas')
+        st.write('Procedimento: Coleta manual de informações de vagas em sites de vagas seguindo os critérios:')
         st.markdown("""
                     <ul>
                     <li>Cargos: Analista de BI, Cientista de Dados, Eng. de Dados</li>
                     <li>Fontes: Google Vagas e Linkedin</li>
-                    <li>Belo Horizonte - MG </li>
-                    <li>Março/2020</li>
+                    <li>Cidade: Belo Horizonte - MG </li>
+                    <li>Período: Março/2020</li>
                     </ul>
                     """, unsafe_allow_html=True)
 
-        st.write('Inserção em planilha "Excel" contendo como colunas: "company","text" e "url", gerando os arquivos para cada cargo')
+        st.write('Tabulação: Inserção em planilha "Excel" contendo como colunas: "company" (empresa) ,"text" (descritivo) e "url" (endereço) e "charge (cargo)')
 
-        st.markdown(get_table_download_link(df_src,'source.xlsx','Fonte de Dados'), unsafe_allow_html=True)        
+        st.markdown(get_table_download_link(df_src,'source.xlsx','Baixar Fonte de Dados','csv'), unsafe_allow_html=True)        
         st.write('As stacks foram coletadas a partir de sites de recrutamento, como Programathor, Revelo e Geekhunter')
 
-        st.markdown(get_table_download_link(df_src,'stacks.json','Baixar lista de Stacks'), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(df_src,'stacklist.json','Baixar lista de Stacks','json'), unsafe_allow_html=True)
 
-        st.write('A partir da exploração dos dados foi possível categorizar os stacks de acordo com diferentes categorias e, assim, construir um dicionário de correspondência, para tal utilizou-se basicamente o site wikipedia.org')
-        st.markdown(get_table_download_link(df_src,'categories.json','Baixar Categorização'), unsafe_allow_html=True)
+        st.write('Categorização: A partir da exploração dos dados foi possível categorizar os stacks de acordo com diferentes categorias:')
+        st.markdown("""<ul>
+                    <li>Banco de Dados</li>
+                    <li>Software/Visualização</li>
+                    <li>Linguagem de Programação</li>
+                    <li>Serviços</li>
+                    <li>Bibliotecas e Frameworks</li>
+                    </ul>
+            """, unsafe_allow_html=True)
+        st.write('Construiu-se então um dicionário de correspondência, para tal utilizou-se basicamente o site wikipedia.org')
+
+        st.markdown(get_table_download_link(df_src,'categories.json','Baixar Categorização','json'), unsafe_allow_html=True)
+
+        st.write('Com os dados categorizados, realizaram-se as análises expostas no menu "Apresentação"')
+
         st.write('O código completo está publicado no endereço abaixo, dúvidas e sugestões são bem-vindas')
 
         st.markdown("""<a href='https://github.com/gabrielmrp/datajobs' target='_blank'>Link para o Github</a>""", unsafe_allow_html=True)

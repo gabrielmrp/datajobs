@@ -3,3 +3,4 @@ pandas==1.0.3
 streamlit==0.73.0
 seaborn==0.11.0
 openpyxl
+xlsxwriter

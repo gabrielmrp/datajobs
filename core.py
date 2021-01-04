@@ -35,7 +35,7 @@ def operation():
     
     for charge in ["BI","CD","ED"]:
         filename = charge+".json"
-        print(charge)
+        #print(charge)
         dx = pd.DataFrame()
         
         #with open(filename, encoding='utf-8') as json_file:
