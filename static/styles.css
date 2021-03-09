@@ -1,0 +1,38 @@
+.big-font 
+{
+font-size:10px !important;
+}
+
+label
+{
+font-size:14px!important
+}
+
+.stDataFrame
+{
+margin:0 50%
+}
+
+
+.profile-rail-card__member-bg-image 
+{
+    background-position: center;
+    background-size: cover;
+    display: block;
+    height: 0px;
+    margin: -12px -12px 0;
+}
+
+.profile-rail-card__actor-meta 
+{
+    border-bottom: 1px solid rgba(0,0,0,.15);
+    padding: 0;
+}
+
+.theme--mercado .profile-rail-card__actor-meta 
+{
+    border-bottom-color: var(--color-border-faint);
+}
+.sn{
+display:grid;margin-bottom:20px
+}

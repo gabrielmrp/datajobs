@@ -11,10 +11,9 @@ import base64
 from pylab import rcParams
 from io import BytesIO
 
+
 def get_table_download_link(df,filename,description,ftype):
-    """Generates a link allowing the data in a given panda dataframe to be downloaded
-    in:  dataframe
-    out: href string
+    """Generates a link allowing the data in a given panda dataframe to be downloaded 
     """
     def to_excel(df):
             output = BytesIO()
@@ -37,118 +36,176 @@ def get_table_download_link(df,filename,description,ftype):
     return href
 
 
+
+def create_barplot(data_items):
+    fig = plt.gcf() 
+    bp = sns.barplot(x="Contagem",
+                             y="Item",
+                             hue=None,
+                              palette="Set2",
+                             data=data_items)
+    fig.set_size_inches(12, 6)  
+    sns.color_palette("mako" )
+    return bp
+   
+
+
+
+
+def put_text_barplot(bp,spacement): 
+    for p in bp.patches:
+        width = p.get_width()      
+        bp.text(width + spacement,       
+                        p.get_y() + p.get_height() / 2, 
+                        '{:1.0f}'.format(width), 
+                        ha = 'left',    
+                        va = 'center')   
     
-def main():
     
+     
+def main(): 
+    #get the data
+    df,db_df,df_src = core.operation()
     charge_dict = {'Analista de BI':'BI',
                    'Cientista de Dados':'CD',
                    'Eng. de Dados':'BD'
                     }
-    df,db_df,df_src = core.operation()
     
+    #interface setup
+        
     st.set_page_config(page_title='Datajobs', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
-    st.markdown("""
-                <style>
-                .big-font {
-                    font-size:10px !important;
-                }
-                .stDataFrame{margin:0 50%}
-                </style>
+    c1, c2, c3, c4 = st.beta_columns((1, 6, 1 , 1)) 
+    f = open("static/styles.css", "r") 
+    st.markdown("<style>"+f.read()+"</style>", unsafe_allow_html=True)
+
+
+    #Description  
+    c2.header('Objetivo')
+    c2.write('O objetivo principal é dar uma visão ao profissional da área de dados sobre cargos e ferramentas da área. Três objetivos se destacam:')   
+    c2.markdown("""
+                <ol>
+                <li>Tecer comparativos entre os principais cargos da área de dados quanto ao tipo de ferramentas que utilizam (ajudar a escolher qual cargo focar a partir de seu background e/ou uso de ferramentas de interesse)</li>
+                <li>Verificar quais são ferramentas mais utilizadas nas áreas de dados por categoria (no caso queira escolher um curso ainda não tendo definido o cargo de interesse )</li>
+                <li>Verificar quais ferramentas são mais utilizadas no cargo de interesse (caso queira escolher um curso e já tenha definido o cargo de interesse)</li> 
+                </ol>
+                """, unsafe_allow_html=True)        
+    c2.header('Metodologia')  
+    c2.markdown("""
+                <b>Coleta</b>
+                """, unsafe_allow_html=True)   
+    c2.write('Procedimento: Coleta manual de informações de vagas em sites de vagas seguindo os critérios:')
+    c2.markdown("""
+                <ul>
+                <li>Cargos: Analista de BI, Cientista de Dados, Eng. de Dados</li>
+                <li>Fontes: Google Vagas e Linkedin</li>
+                <li>Cidade: Belo Horizonte - MG </li>
+                <li>Período: Março/2020</li>
+                </ul>
                 """, unsafe_allow_html=True)
 
+    c2.write('Tabulação: Inserção em planilha "Excel" contendo como colunas: "company" (empresa) ,"text" (descritivo) e "url" (endereço) e "charge" (cargo)')
 
-    selection = st.sidebar.radio("Menu", ['Apresentação','Metodologia'])
+    c2.markdown(get_table_download_link(df_src,'source.xlsx','Baixar Fonte de Dados','csv'), unsafe_allow_html=True)        
+    c2.write('As stacks foram coletadas a partir de sites de recrutamento: Programathor, Revelo e Geekhunter')
+ 
 
+    c2.markdown(get_table_download_link(df_src,'stacklist.json','Baixar lista de Stacks','json'), unsafe_allow_html=True)
+    c2.markdown("""
+                <b>Processamento</b>
+                """, unsafe_allow_html=True)  
+    c2.write('Categorização: A partir da exploração dos dados foi possível categorizar os stacks de acordo com diferentes categorias:')
+    c2.markdown("""<ul>
+                <li>Banco de Dados</li>
+                <li>Software/Visualização</li>
+                <li>Linguagem de Programação</li>
+                <li>Serviços</li>
+                <li>Bibliotecas e Frameworks</li>
+                </ul>
+        """, unsafe_allow_html=True)
+    c2.write('Construiu-se então um dicionário de correspondência, para tal utilizou-se basicamente o site wikipedia.org')
 
-    if(selection=='Metodologia'):
-        st.header('Metodologia')
+    c2.markdown(get_table_download_link(df_src,'categories.json','Baixar Categorização','json'), unsafe_allow_html=True)
 
-    #if st.sidebar.button('Metodologia'):         
-        st.write('Procedimento: Coleta manual de informações de vagas em sites de vagas seguindo os critérios:')
-        st.markdown("""
-                    <ul>
-                    <li>Cargos: Analista de BI, Cientista de Dados, Eng. de Dados</li>
-                    <li>Fontes: Google Vagas e Linkedin</li>
-                    <li>Cidade: Belo Horizonte - MG </li>
-                    <li>Período: Março/2020</li>
-                    </ul>
-                    """, unsafe_allow_html=True)
-
-        st.write('Tabulação: Inserção em planilha "Excel" contendo como colunas: "company" (empresa) ,"text" (descritivo) e "url" (endereço) e "charge" (cargo)')
-
-        st.markdown(get_table_download_link(df_src,'source.xlsx','Baixar Fonte de Dados','csv'), unsafe_allow_html=True)        
-        st.write('As stacks foram coletadas a partir de sites de recrutamento, como Programathor, Revelo e Geekhunter')
-
-        st.markdown(get_table_download_link(df_src,'stacklist.json','Baixar lista de Stacks','json'), unsafe_allow_html=True)
-
-        st.write('Categorização: A partir da exploração dos dados foi possível categorizar os stacks de acordo com diferentes categorias:')
-        st.markdown("""<ul>
-                    <li>Banco de Dados</li>
-                    <li>Software/Visualização</li>
-                    <li>Linguagem de Programação</li>
-                    <li>Serviços</li>
-                    <li>Bibliotecas e Frameworks</li>
-                    </ul>
-            """, unsafe_allow_html=True)
-        st.write('Construiu-se então um dicionário de correspondência, para tal utilizou-se basicamente o site wikipedia.org')
-
-        st.markdown(get_table_download_link(df_src,'categories.json','Baixar Categorização','json'), unsafe_allow_html=True)
-
-        st.write('Com os dados categorizados, realizaram-se as análises expostas no menu "Apresentação"')
-
-        st.write('O código completo está publicado no endereço abaixo, dúvidas e sugestões são bem-vindas')
-
-        st.markdown("""<a href='https://github.com/gabrielmrp/datajobs' target='_blank'>Link para o Github</a>""", unsafe_allow_html=True)
-        
-         
-    else:
-        st.header('Comparação de Cargos na Área de Dados')
-        df.columns=['Analista de BI', 'Cientista de Dados', 'Eng. de Dados']
-        df2 = pd.DataFrame(df.unstack()).reset_index()
-        df2.columns=['Cargo','Categoria','Contagem']
-        plt.figure(figsize=(16, 6))
-        fig = plt.gcf()
-        sb = sns.barplot(x="Categoria", y="Contagem", hue="Cargo", data=df2)
-        sb.set_xticklabels(sb.get_xticklabels(), 
-                              rotation=45, 
-                              horizontalalignment='right')
-        st.pyplot(fig)
-        st.write('O Eixo "Contagem" se refere ao número de termos encontrados, excluíndo-se duplicações em uma mesma vaga')
-
-        rcParams['figure.figsize'] = 5, 8
+    c2.write('Com os dados categorizados, realizaram-se as análises expostas no menu "Apresentação"')
+  
+    c2.markdown("""
+                <b>Resultados</b>
+                """, unsafe_allow_html=True) 
 
 
+    c2.header('Comparação de Cargos na Área de Dados')
+    c2.write('O Eixo "Contagem de itens" se refere ao número de itens em vagas encontrados, excluíndo-se duplicações em uma mesma vaga')
 
-        st.header('Stacks por Cargo e Categoria')    
-        charge = st.selectbox("Escolha um cargo:", ['Analista de BI', 'Cientista de Dados', 'Eng. de Dados'])
-        
-        category = st.selectbox("Escolha uma categoria:", df.index.tolist())
-        
-        
-        items = db_df[(db_df.charge==charge_dict[charge])&(db_df.category== category )]
-        items = items[['item','count']]
-        items.rename(columns={'item':'Item','count':'Contagem'},inplace=True)        
-        st.dataframe(items.set_index(['Item']),width=1024, height=768)
+    ##########################################################################
+    #dataframe operations
+    df.columns=['Analista de BI', 'Cientista de Dados', 'Eng. de Dados']
+    df2 = pd.DataFrame(df.unstack()).reset_index()
+    df2.columns=['Cargo','Categoria','Contagem de itens']
+    
+    
+    #plot operations
+    plt.figure(figsize=(9, 4))
+    fig = plt.gcf()
+    sns.color_palette("mako"  )
+    sb = sns.barplot(x="Categoria", y="Contagem de itens",palette="Set2", hue="Cargo", data=df2)
+    sb.set_xticklabels(sb.get_xticklabels(), 
+                          rotation=45, 
+                          horizontalalignment='right')
+    c2.pyplot(fig)
+    plt.close()
+    sb.set_xticklabels('')
 
+     ##########################################################################
+    
+    c2.header('Stacks por Categoria') 
+    c2.write('Nessa análise trabalhamos com o montante de vagas, será indicada a quantidade de vagas em que um determinado "Item" é citado.')  
+    
+    categories = db_df.category.unique().tolist()
+    
+    for cat in categories:
+         if(cat!='Outros'):
+             
+             
+            c2.write(cat)
+            
+            #dataframe operations
+            item_category = db_df[db_df.category==cat].groupby(['item','category']).sum().sort_values(['count'],ascending=False).head(5).reset_index()[['item','count']].set_index(['item'])
+            item_category.reset_index(inplace=True)
+            item_category.rename(columns={'item':'Item','count':'Contagem'},inplace=True)
+ 
+            #plot operations    
+            fig = plt.gcf()            
+            bp1 = create_barplot(item_category)             
+            put_text_barplot(bp1,spacement=1)
+            c2.pyplot(fig)
+            bp1.clear() 
+ 
+             
+    ##########################################################################
+    c2.header('Stacks por Cargo e Categoria')
+    c2.write('Nessa análise podem ser escolhidos as "Categorias" e "Cargos" através dos menus de seleção abaixo, será indicada a quantidade de vagas em que um determinado "Item" é citado.')  
 
+    #dataframe operations
+    charge = c2.selectbox("Escolha um cargo:", ['Analista de BI', 'Cientista de Dados', 'Eng. de Dados']) 
+    category = c2.selectbox("Escolha uma categoria:", df.index.tolist()) 
+    items = db_df[(db_df.charge==charge_dict[charge])&(db_df.category== category )]
+    items = items[['item','count']]
+    items.rename(columns={'item':'Item','count':'Contagem'},inplace=True)        
+    
+    
+    #plot operations
+    bp2 = create_barplot(items) 
+    put_text_barplot(bp2,spacement=0.1)    
+    c2.pyplot(fig)        
+ 
+    #generate csv
+    df_src.rename(columns={'company':'Empresa','text':'Descrição','url':'url','charge':'Cargo'},inplace=True)
+    c2.header('Sobre')
+    c2.write('O código completo está publicado no endereço abaixo, dúvidas e sugestões são muito bem-vindas')
 
-        
-        st.header('Stacks por Categoria (Todos os Cargos)') 
-        
-        categories = db_df.category.unique().tolist()
-        
-        for cat in categories:
-             if(cat!='Outros'):
-                st.write(cat)
-                #st.markdown('<i class="big-font">Hello World !!</i>', unsafe_allow_html=True)
-                item_categoria = db_df[db_df.category==cat].groupby(['item','category']).sum().sort_values(['count'],ascending=False).head(5).reset_index()[['item','count']].set_index(['item'])
-                item_categoria.rename(columns={'item':'Item','count':'Contagem'},inplace=True)
-                st.dataframe(item_categoria)
-                
-                
-        
-        df_src.rename(columns={'company':'Empresa','text':'Descrição','url':'url','charge':'Cargo'},inplace=True)
-        
+    #profile
+    pf = open("static/perfil.html", "r")
+    c2.markdown(pf.read(),unsafe_allow_html=True)
  
 if __name__ == '__main__':
     main()
