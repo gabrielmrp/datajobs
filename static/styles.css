@@ -13,7 +13,26 @@ font-size:14px!important
 margin:0 50%
 }
 
+img{
+max-width: 70%!important;
+margin-left: 15%!important;
+} 
 
+img.profile{
+max-width: 1000%!important;
+margin-left: 0%!important;
+}
+
+h2
+{
+text-align:center
+}
+
+div.banner 
+{
+height: 15px;
+background-image: linear-gradient(to right, #849de2 , #2196f3);
+} 
 .profile-rail-card__member-bg-image 
 {
     background-position: center;
@@ -34,5 +53,5 @@ margin:0 50%
     border-bottom-color: var(--color-border-faint);
 }
 .sn{
-display:grid;margin-bottom:20px
+display:grid; 
 }

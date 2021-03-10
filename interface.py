@@ -80,13 +80,14 @@ def main():
 
 
     #Description  
+    c2.markdown("""<div class='banner'></div> """, unsafe_allow_html=True) 
     c2.header('Objetivo')
-    c2.write('O objetivo principal é dar uma visão ao profissional da área de dados sobre cargos e ferramentas da área. Três objetivos se destacam:')   
+    c2.write('O objetivo principal proporcionar uma visão sobre cargos e ferramentas utilizadas na área de dados, proporcionando:')   
     c2.markdown("""
                 <ol>
-                <li>Tecer comparativos entre os principais cargos da área de dados quanto ao tipo de ferramentas que utilizam (ajudar a escolher qual cargo focar a partir de seu background e/ou uso de ferramentas de interesse)</li>
-                <li>Verificar quais são ferramentas mais utilizadas nas áreas de dados por categoria (no caso queira escolher um curso ainda não tendo definido o cargo de interesse )</li>
-                <li>Verificar quais ferramentas são mais utilizadas no cargo de interesse (caso queira escolher um curso e já tenha definido o cargo de interesse)</li> 
+                <li>Tecer comparativos entre os principais cargos da área quanto ao tipo de ferramentas que utilizam, para assim ajudar a escolher qual cargo focar a partir de seu background e/ou uso de ferramentas de interesse;</li>
+                <li>Verificar quais são ferramentas mais utilizadas nas áreas  por categoria, para o caso de querer escolher um curso ainda não tendo definido o cargo de interesse;</li>
+                <li>Verificar quais ferramentas são mais utilizadas no cargo de interesse, isso caso queira escolher um curso e já tenha definido o cargo de interesse.</li> 
                 </ol>
                 """, unsafe_allow_html=True)        
     c2.header('Metodologia')  
@@ -96,17 +97,17 @@ def main():
     c2.write('Procedimento: Coleta manual de informações de vagas em sites de vagas seguindo os critérios:')
     c2.markdown("""
                 <ul>
-                <li>Cargos: Analista de BI, Cientista de Dados, Eng. de Dados</li>
-                <li>Fontes: Google Vagas e Linkedin</li>
-                <li>Cidade: Belo Horizonte - MG </li>
-                <li>Período: Março/2020</li>
+                <li>Cargos: Analista de BI, Cientista de Dados, Eng. de Dados;</li>
+                <li>Fontes: Google Vagas e Linkedin;</li>
+                <li>Cidade: Belo Horizonte - MG;</li>
+                <li>Período: Março/2020.</li>
                 </ul>
                 """, unsafe_allow_html=True)
 
     c2.write('Tabulação: Inserção em planilha "Excel" contendo como colunas: "company" (empresa) ,"text" (descritivo) e "url" (endereço) e "charge" (cargo)')
 
     c2.markdown(get_table_download_link(df_src,'source.xlsx','Baixar Fonte de Dados','csv'), unsafe_allow_html=True)        
-    c2.write('As stacks foram coletadas a partir de sites de recrutamento: Programathor, Revelo e Geekhunter')
+    c2.write('As stacks foram coletadas manualmete a partir de sites de recrutamento, como: Programathor, Revelo e Geekhunter')
  
 
     c2.markdown(get_table_download_link(df_src,'stacklist.json','Baixar lista de Stacks','json'), unsafe_allow_html=True)
@@ -115,11 +116,11 @@ def main():
                 """, unsafe_allow_html=True)  
     c2.write('Categorização: A partir da exploração dos dados foi possível categorizar os stacks de acordo com diferentes categorias:')
     c2.markdown("""<ul>
-                <li>Banco de Dados</li>
-                <li>Software/Visualização</li>
-                <li>Linguagem de Programação</li>
-                <li>Serviços</li>
-                <li>Bibliotecas e Frameworks</li>
+                <li>Banco de Dados;</li>
+                <li>Software/Visualização;</li>
+                <li>Linguagem de Programação;</li>
+                <li>Serviços;</li>
+                <li>Bibliotecas e Frameworks.</li>
                 </ul>
         """, unsafe_allow_html=True)
     c2.write('Construiu-se então um dicionário de correspondência, para tal utilizou-se basicamente o site wikipedia.org')
@@ -165,8 +166,8 @@ def main():
     for cat in categories:
          if(cat!='Outros'):
              
-             
-            c2.write(cat)
+              
+            c2.markdown("<b class='category'>"+cat+"</b>", unsafe_allow_html=True)
             
             #dataframe operations
             item_category = db_df[db_df.category==cat].groupby(['item','category']).sum().sort_values(['count'],ascending=False).head(5).reset_index()[['item','count']].set_index(['item'])
@@ -200,7 +201,6 @@ def main():
  
     #generate csv
     df_src.rename(columns={'company':'Empresa','text':'Descrição','url':'url','charge':'Cargo'},inplace=True)
-    c2.header('Sobre')
     c2.write('O código completo está publicado no endereço abaixo, dúvidas e sugestões são muito bem-vindas')
 
     #profile
