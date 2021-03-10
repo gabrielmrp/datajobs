@@ -42,6 +42,8 @@ background-image: linear-gradient(to right, #849de2 , #2196f3);
     margin: -12px -12px 0;
 }
 
+.autor{background:whitesmoke;padding:20px}
+
 .profile-rail-card__actor-meta 
 {
     border-bottom: 1px solid rgba(0,0,0,.15);
