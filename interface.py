@@ -65,26 +65,31 @@ def put_text_barplot(bp,spacement):
      
 def main(): 
     
-    
+
     
     #check if in development to hide menu
     try:
         open("indev.txt","r")
-        hide_streamlit_menu = """#MainMenu {visibility: hidden;}footer {visibility: hidden;}"""
+        hide_streamlit_menu = ""
     except:
-        hide_streamlit_menu=""
+        hide_streamlit_menu="""#MainMenu {visibility: hidden;}footer {visibility: hidden;}"""
         
 
     #get the data
     df,db_df,df_src = core.operation()
     charge_dict = {'Analista de BI':'BI',
                    'Cientista de Dados':'CD',
-                   'Eng. de Dados':'BD'
+                   'Eng. de Dados':'ED'
                     }
     
     #interface setup
         
-    st.set_page_config(page_title='Datajobs', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
+    st.set_page_config( 
+     page_icon = 'favicon.ico',
+      layout = 'wide',
+       initial_sidebar_state = 'auto',
+         page_title='Cargos na Área de Dados' 
+    )
     c1, c2, c3, c4 = st.beta_columns((1, 6, 1 , 1)) 
     f = open("static/styles.css", "r") 
     st.markdown("<style>"+f.read()+hide_streamlit_menu+"</style>", unsafe_allow_html=True)
